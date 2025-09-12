@@ -1,0 +1,14 @@
+name: albumgrid
+version: 0
+
+dependencies:
+  stumpy_core:
+    github: stumpycr/stumpy_core
+  stumpy_png:
+    github: stumpycr/stumpy_png
+  pluto:
+    github: phenopolis/pluto
+
+targets:
+  albumgrid:
+    main: src/main.cr
