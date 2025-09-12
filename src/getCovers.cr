@@ -1,23 +1,21 @@
 def getCovers(params : Hash) : Array(Canvas)
   images = Array(Canvas).new
   # get filenames.
-  filenames = find(params["dir"]) { |x| ["png", "jpg", "jpeg"].includes? filetype(x) }
+  filenames = find(params["dir"].as(String)) { |x| ["png", "jpg", "jpeg"].includes? filetype(x) }
   
   case params["sortby"]
-  when "filename"
+  when SortBy::Filename
     filenames.sort! { |a, b| a.downcase <=> b.downcase }
-  when "random"
+  when SortBy::Random
     filenames.sort! { [-1, 1].sample }
   end
 
-  verbose = !params["verbose"].empty?
-
   filenames.each_with_index do |filename, i|
-    print "\rProcessing file #{i+1}/#{filenames.size}..." if verbose
+    print "\rProcessing file #{i+1}/#{filenames.size}..." if params["verbose"]
     img = filename2imagergba(filename)
     images.push downscale(img).to_stumpy if img
   end
-  puts " done" if verbose
+  puts " done" if params["verbose"]
 
   return images
 end
