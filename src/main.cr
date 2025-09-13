@@ -18,38 +18,36 @@ enum SortBy
   Random
 end
 
-def checkArgs(required)
+def checkArgs(params, required)
   required.each do |k, v|
-    (puts "#{v}\nDo `collage -h` for more info."; exit 1) if k.empty?
+    (puts "#{v}\nDo `collage -h` for more info."; exit 1) if params[k].nil?
   end
 end
 
-directory = ""
-outfile = ""
-verbose = false
-sortBy = SortBy::Filename
+params = Hash(String, String? | Bool | SortBy | RGBA).new
+params["verbose"] = false
+params["dir"] = nil
+params["outfile"] = nil
+params["sortBy"] = SortBy::Filename
+params["useMagic"] = false
 
 OptionParser.parse { |parser|
   parser.banner = "ALBUMGRID: make a grid of album covers\n"
   parser.on("-h", "--help", "show this help message") { puts parser; exit }
-  parser.on("-d DIR", "--directory DIR", "directory to get covers from") { |d| directory = d }
-  parser.on("-o FILENAME", "JPG file to output collage to") { |o| outfile = o }
-  parser.on("-v", "--verbose", "enable verbose output") { verbose = true }
-  parser.on("-s METHOD", "--sort METHOD", "sort albums by") { |s| sortBy = SortBy.parse(s) }
+  parser.on("-d DIR", "--directory DIR", "directory to get covers from") { |d| params["dir"] = d }
+  parser.on("-o FILENAME", "JPG file to output collage to") { |o| params["outfile"] = o }
+  parser.on("-v", "--verbose", "enable verbose output") { params["verbose"] = true }
+  parser.on("-s METHOD", "--sort METHOD", "sort albums by") { |s| params["sortBy"] = SortBy.parse(s) }
+  parser.on("-m", "--magic", "use libmagic to detect images instead of filenames (real slow)") { |m| params["useMagic"] = true }
   if ARGV.size == 0
     puts parser
     exit
   end
 }
 
-checkArgs({outfile => "You have to specify a JPG file to which to output the collage.",
-           directory => "You have to specify a directory."})
-
-params = Hash(String, String | Bool | SortBy | RGBA).new
-params["verbose"] = verbose
-params["dir"] = directory
-params["sortby"] = sortBy
+checkArgs(params, {"outfile" => "You have to specify a JPG file to which to output the collage.",
+                   "dir" => "You have to specify a directory."})
 
 # The 🍖 & 🥔
 images = getCovers(params)
-save(collage(images), outfile)
+save(collage(images), params["outfile"])

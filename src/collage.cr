@@ -17,7 +17,8 @@ def collage(imgs : Array(Canvas), bg : RGBA = RGBA::MISTYROSE) : Canvas
   return collage
 end
 
-def save(img : Canvas, filename : String)
+def save(img : Canvas, filename)
+  filename = filename.as(String)
   io = IO::Memory.new
   Pluto::ImageRGBA.from_stumpy(img).to_jpeg(io)
   io.rewind
