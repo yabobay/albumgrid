@@ -9,8 +9,6 @@ require "./collage.cr"
 
 include StumpyCore
 
-COVERSIZE = 128 # size of each cover in the grid
-
 class Option end
 
 enum SortBy
@@ -18,19 +16,20 @@ enum SortBy
   Random
 end
 
-def checkArgs(params, required)
-  required.each do |k, v|
-    (puts "#{v}\nDo `collage -h` for more info."; exit 1) if params[k].nil?
-  end
-end
-
-Params = Hash(String, String? | Bool | SortBy | RGBA).new
+Params = Hash(String, String? | Bool | SortBy | RGBA | UInt16).new
 Params["verbose"] = false
 Params["dir"] = nil
 Params["outfile"] = nil
 Params["sortBy"] = SortBy::Filename
 Params["useMagic"] = false
 Params["bg"] = RGBA::MISTYROSE
+Params["coverSize"] = 128 # TODO: make it an argument
+
+def checkArgs(params, required)
+  required.each do |k, v|
+    (puts "#{v}\nDo `collage -h` for more info."; exit 1) if params[k].nil?
+  end
+end
 
 OptionParser.parse { |parser|
   parser.banner = "ALBUMGRID: make a grid of album covers\n"
@@ -39,7 +38,8 @@ OptionParser.parse { |parser|
   parser.on("-o FILENAME", "JPG file to output collage to") { |o| Params["outfile"] = o }
   parser.on("-v", "--verbose", "enable verbose output") { Params["verbose"] = true }
   parser.on("-s METHOD", "--sort METHOD", "sort albums by") { |s| Params["sortBy"] = SortBy.parse(s) }
-  parser.on("-m", "--magic", "use libmagic to detect images instead of filenames (real slow)") { |m| Params["useMagic"] = true }
+  parser.on("-m", "--magic", "use libmagic to detect images instead of filenames (real slow)") { |m| Params["useMagic"] = m }
+  parser.on("-w SIZE", "--size", "size of each album in pixels") { |w| Params["coverSize"] = w.to_u16 }
   if ARGV.size == 0
     puts parser
     exit

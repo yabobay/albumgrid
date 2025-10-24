@@ -1,17 +1,18 @@
 include Math
 
 def collage(imgs : Array(Canvas)) : Canvas
+  coverSize = Params["coverSize"].as Int
   gridSize = sqrt(imgs.size).ceil.to_i
-  gridSizePx = gridSize * COVERSIZE
+  gridSizePx = gridSize * coverSize
   collage = Canvas.new(gridSizePx, gridSizePx, background = Params["bg"].as RGBA)
 
   x = y = 0
   imgs.each do |img|
     collage.paste(img, x, y)
-    x += COVERSIZE
+    x += coverSize
     if x >= gridSizePx
       x = 0
-      y += COVERSIZE
+      y += coverSize
     end
   end
   return collage

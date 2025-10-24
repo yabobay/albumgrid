@@ -22,7 +22,8 @@ def getCovers : Array(Canvas)
 end
 
 def downscale(img : Pluto::ImageRGBA) : Pluto::ImageRGBA
-  img.bilinear_resize(COVERSIZE, COVERSIZE)
+  coverSize = Params["coverSize"].as Int
+  img.bilinear_resize(coverSize, coverSize)
 end
 
 def downscale(img : Canvas) : Pluto::ImageRGBA
