@@ -1,10 +1,10 @@
 require "./libmagic.cr"
 
-def getCovers(params : Hash) : Array(Canvas)
+def getCovers : Array(Canvas)
   images = Array(Canvas).new
-  filenames = find params["dir"].as(String) { |x| isImage(x, params["useMagic"]) }
-  
-  case params["sortBy"]
+  filenames = find Params["dir"].as String { |x| isImage(x, Params["useMagic"]) }
+
+  case Params["sortBy"]
   when SortBy::Filename
     filenames.sort! { |a, b| a.downcase <=> b.downcase }
   when SortBy::Random
@@ -12,11 +12,11 @@ def getCovers(params : Hash) : Array(Canvas)
   end
 
   filenames.each_with_index do |filename, i|
-    print "\rProcessing file #{i+1}/#{filenames.size}..." if params["verbose"]
+    print "\rProcessing file #{i+1}/#{filenames.size}..." if Params["verbose"]
     img = filename2imagergba(filename)
     images.push downscale(img).to_stumpy if img
   end
-  puts " done" if params["verbose"]
+  puts " done" if Params["verbose"]
 
   return images
 end

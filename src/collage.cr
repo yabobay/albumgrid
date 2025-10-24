@@ -1,9 +1,9 @@
 include Math
 
-def collage(imgs : Array(Canvas), bg : RGBA = RGBA::MISTYROSE) : Canvas
+def collage(imgs : Array(Canvas)) : Canvas
   gridSize = sqrt(imgs.size).ceil.to_i
   gridSizePx = gridSize * COVERSIZE
-  collage = Canvas.new(gridSizePx, gridSizePx, background = bg)
+  collage = Canvas.new(gridSizePx, gridSizePx, background = Params["bg"].as RGBA)
 
   x = y = 0
   imgs.each do |img|

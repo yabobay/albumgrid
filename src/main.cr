@@ -24,30 +24,31 @@ def checkArgs(params, required)
   end
 end
 
-params = Hash(String, String? | Bool | SortBy | RGBA).new
-params["verbose"] = false
-params["dir"] = nil
-params["outfile"] = nil
-params["sortBy"] = SortBy::Filename
-params["useMagic"] = false
+Params = Hash(String, String? | Bool | SortBy | RGBA).new
+Params["verbose"] = false
+Params["dir"] = nil
+Params["outfile"] = nil
+Params["sortBy"] = SortBy::Filename
+Params["useMagic"] = false
+Params["bg"] = RGBA::MISTYROSE
 
 OptionParser.parse { |parser|
   parser.banner = "ALBUMGRID: make a grid of album covers\n"
   parser.on("-h", "--help", "show this help message") { puts parser; exit }
-  parser.on("-d DIR", "--directory DIR", "directory to get covers from") { |d| params["dir"] = d }
-  parser.on("-o FILENAME", "JPG file to output collage to") { |o| params["outfile"] = o }
-  parser.on("-v", "--verbose", "enable verbose output") { params["verbose"] = true }
-  parser.on("-s METHOD", "--sort METHOD", "sort albums by") { |s| params["sortBy"] = SortBy.parse(s) }
-  parser.on("-m", "--magic", "use libmagic to detect images instead of filenames (real slow)") { |m| params["useMagic"] = true }
+  parser.on("-d DIR", "--directory DIR", "directory to get covers from") { |d| Params["dir"] = d }
+  parser.on("-o FILENAME", "JPG file to output collage to") { |o| Params["outfile"] = o }
+  parser.on("-v", "--verbose", "enable verbose output") { Params["verbose"] = true }
+  parser.on("-s METHOD", "--sort METHOD", "sort albums by") { |s| Params["sortBy"] = SortBy.parse(s) }
+  parser.on("-m", "--magic", "use libmagic to detect images instead of filenames (real slow)") { |m| Params["useMagic"] = true }
   if ARGV.size == 0
     puts parser
     exit
   end
 }
 
-checkArgs(params, {"outfile" => "You have to specify a JPG file to which to output the collage.",
+checkArgs(Params, {"outfile" => "You have to specify a JPG file to which to output the collage.",
                    "dir" => "You have to specify a directory."})
 
 # The 🍖 & 🥔
-images = getCovers(params)
-save(collage(images), params["outfile"])
+images = getCovers
+save(collage(images), Params["outfile"])
