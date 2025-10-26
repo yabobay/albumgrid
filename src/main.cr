@@ -16,7 +16,7 @@ enum SortBy
   Random
 end
 
-Params = Hash(String, String? | Bool | SortBy | RGBA | UInt16).new
+Params = Hash(String, (String | Bool | SortBy | RGBA | UInt16)?).new
 Params["verbose"] = false
 Params["dir"] = nil
 Params["outfile"] = nil
