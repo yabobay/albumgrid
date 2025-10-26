@@ -2,19 +2,23 @@ include Math
 
 def collage(imgs : Array(Canvas)) : Canvas
   coverSize = Params["coverSize"].as Int
-  gridSize = sqrt(imgs.size).ceil.to_i
-  gridSizePx = gridSize * coverSize
-  collage = Canvas.new(gridSizePx, gridSizePx, background = Params["bg"].as RGBA)
+  square = sqrt(imgs.size)
+  gridWidth = square.ceil.to_i
+  gridHeight = Params["square"] ? gridWidth : square.floor.to_i
+  gridWidthPx = gridWidth * coverSize
+  gridHeightPx = gridHeight * coverSize
+  collage = Canvas.new(gridWidthPx, gridHeightPx, background = Params["bg"].as RGBA)
 
   x = y = 0
   imgs.each do |img|
     collage.paste(img, x, y)
     x += coverSize
-    if x >= gridSizePx
+    if x >= gridWidthPx
       x = 0
       y += coverSize
     end
   end
+
   return collage
 end
 
@@ -25,4 +29,3 @@ def save(img : Canvas, filename)
   io.rewind
   File.write(filename, io)
 end
-

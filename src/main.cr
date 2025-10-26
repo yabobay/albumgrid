@@ -23,7 +23,8 @@ Params["outfile"] = nil
 Params["sortBy"] = SortBy::Filename
 Params["useMagic"] = false
 Params["bg"] = RGBA::MISTYROSE
-Params["coverSize"] = 128 # TODO: make it an argument
+Params["coverSize"] = 128
+Params["square"] = false
 
 def checkArgs(params, required)
   required.each do |k, v|
@@ -40,6 +41,7 @@ OptionParser.parse { |parser|
   parser.on("-s METHOD", "--sort METHOD", "sort albums by") { |s| Params["sortBy"] = SortBy.parse(s) }
   parser.on("-m", "--magic", "use libmagic to detect images instead of filenames (real slow)") { |m| Params["useMagic"] = m }
   parser.on("-w SIZE", "--size", "size of each album in pixels") { |w| Params["coverSize"] = w.to_u16 }
+  parser.on("--square", "force square image shape with empty space") { |s| Params["square"] = s }
   if ARGV.size == 0
     puts parser
     exit
