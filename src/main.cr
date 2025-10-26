@@ -26,12 +26,6 @@ Params["bg"] = RGBA::MISTYROSE
 Params["coverSize"] = 128
 Params["square"] = false
 
-def checkArgs(params, required)
-  required.each do |k, v|
-    (puts "#{v}\nDo `collage -h` for more info."; exit 1) if params[k].nil?
-  end
-end
-
 OptionParser.parse { |parser|
   parser.banner = "ALBUMGRID: make a grid of album covers\n"
   parser.on("-h", "--help", "show this help message") { puts parser; exit }
@@ -48,8 +42,10 @@ OptionParser.parse { |parser|
   end
 }
 
-checkArgs(Params, {"outfile" => "You have to specify a JPG file to which to output the collage.",
-                   "dir" => "You have to specify a directory."})
+{"outfile" => "You have to specify a JPG file to which to output the collage.",
+ "dir" => "You have to specify a directory."}.each do |k,v|
+  (puts "#{v}\nDo `collage -h` for more info."; exit 1) if Params[k].nil?
+end
 
 # The 🍖 & 🥔
 images = getCovers
